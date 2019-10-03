@@ -94,7 +94,7 @@ open class YoutubePlayerView: UIView {
     private var autoplay = false
     
     public weak var delegate: YoutubePlayerViewDelegate?
-    
+    public var playerState: YoutubePlayerState = .unknown
     private var configuration: WKWebViewConfiguration {
         let preferences = WKPreferences()
         preferences.javaScriptEnabled = true
@@ -281,6 +281,7 @@ extension YoutubePlayerView {
         let command = "player.seekTo(\(seconds), \(allowSeekAhead));"
         webView.evaluateJavaScript(command, completionHandler: nil)
     }
+    
 }
 
 // MARK:- Cueing methods
@@ -730,6 +731,7 @@ extension YoutubePlayerView {
             delegate?.playerViewDidBecomeReady(self)
         case .onStateChange:
             if let data = data, let state = YoutubePlayerState(rawValue: data) {
+                self.playerState = state
                 delegate?.playerView(self, didChangedToState: state)
             }
         case .onPlaybackQualityChange:
